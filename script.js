@@ -1,11 +1,17 @@
 const svg = document.getElementById("drawingBoard");
 const clearBtn = document.getElementById("clearBtn");
+const colorPicker = document.getElementById("colorPicker");
+const strokeRange = document.getElementById("strokeWidth");
+const strokeValue = document.getElementById("strokeWidthValue");
+const rainbowBtn = document.getElementById("rainbowBtn");
 
 let isDrawing = false;
 let currentLine = null;
 let points = "";
+let strokeColor = colorPicker.value;
+let strokeWidth = parseFloat(strokeRange.value);
+let rainbowMode = false;
 
-/* ✅ Get Mouse Position Inside SVG */
 function getMousePosition(event) {
   const rect = svg.getBoundingClientRect();
 
@@ -15,52 +21,73 @@ function getMousePosition(event) {
   };
 }
 
-/* ✅ Start Drawing */
-svg.addEventListener("mousedown", (event) => {
+function updateStrokeLabel(value) {
+  strokeValue.textContent = parseFloat(value).toFixed(1);
+}
+
+function getStrokeColor() {
+  if (rainbowMode) {
+    const hue = Math.floor(Math.random() * 360);
+    return `hsl(${hue}, 90%, 55%)`;
+  }
+  return strokeColor;
+}
+
+function startDrawing(event) {
+  event.preventDefault();
   isDrawing = true;
   points = "";
 
   const pos = getMousePosition(event);
 
-  // Create new polyline stroke
-  currentLine = document.createElementNS(
-    "http://www.w3.org/2000/svg",
-    "polyline"
-  );
-
+  currentLine = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
   currentLine.setAttribute("fill", "none");
-  currentLine.setAttribute("stroke", "blue");
-  currentLine.setAttribute("stroke-width", "3");
+  currentLine.setAttribute("stroke", getStrokeColor());
+  currentLine.setAttribute("stroke-width", strokeWidth.toString());
   currentLine.setAttribute("stroke-linecap", "round");
+  currentLine.setAttribute("stroke-linejoin", "round");
 
-  // First point
   points += `${pos.x},${pos.y} `;
   currentLine.setAttribute("points", points);
 
   svg.appendChild(currentLine);
-});
+}
 
-/* ✅ Draw While Moving Mouse */
-svg.addEventListener("mousemove", (event) => {
+function draw(event) {
   if (!isDrawing) return;
 
   const pos = getMousePosition(event);
-
   points += `${pos.x},${pos.y} `;
   currentLine.setAttribute("points", points);
-});
+}
 
-/* ✅ Stop Drawing */
-svg.addEventListener("mouseup", () => {
+function stopDrawing() {
+  if (!isDrawing) return;
   isDrawing = false;
+}
+
+colorPicker.addEventListener("input", (event) => {
+  strokeColor = event.target.value;
 });
 
-/* ✅ Stop Drawing if Cursor Leaves */
-svg.addEventListener("mouseleave", () => {
-  isDrawing = false;
+strokeRange.addEventListener("input", (event) => {
+  strokeWidth = parseFloat(event.target.value);
+  updateStrokeLabel(event.target.value);
 });
 
-/* ✅ Clear All Drawing */
+rainbowBtn.addEventListener("click", () => {
+  rainbowMode = !rainbowMode;
+  rainbowBtn.textContent = rainbowMode ? "🌈 Rainbow On" : "🌈 Rainbow Off";
+  rainbowBtn.classList.toggle("active", rainbowMode);
+});
+
+svg.addEventListener("pointerdown", startDrawing);
+svg.addEventListener("pointermove", draw);
+svg.addEventListener("pointerup", stopDrawing);
+svg.addEventListener("pointerleave", stopDrawing);
+svg.addEventListener("pointercancel", stopDrawing);
+
 clearBtn.addEventListener("click", () => {
-  svg.innerHTML = ""; // removes all polylines
+  svg.innerHTML = "";
 });
+
