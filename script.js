@@ -1,93 +1,31 @@
-const svg = document.getElementById("drawingBoard");
-const clearBtn = document.getElementById("clearBtn");
-const colorPicker = document.getElementById("colorPicker");
-const strokeRange = document.getElementById("strokeWidth");
-const strokeValue = document.getElementById("strokeWidthValue");
-const rainbowBtn = document.getElementById("rainbowBtn");
-
-let isDrawing = false;
-let currentLine = null;
-let points = "";
-let strokeColor = colorPicker.value;
-let strokeWidth = parseFloat(strokeRange.value);
-let rainbowMode = false;
-
-function getMousePosition(event) {
-  const rect = svg.getBoundingClientRect();
-
-  return {
-    x: event.clientX - rect.left,
-    y: event.clientY - rect.top
-  };
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f5f5f5;
 }
 
-function updateStrokeLabel(value) {
-  strokeValue.textContent = parseFloat(value).toFixed(1);
+canvas {
+  border: 2px solid black;
+  background: white;
+  cursor: crosshair;
 }
 
-function getStrokeColor() {
-  if (rainbowMode) {
-    const hue = Math.floor(Math.random() * 360);
-    return `hsl(${hue}, 90%, 55%)`;
-  }
-  return strokeColor;
+button {
+  margin-top: 15px;
+  padding: 10px 20px;
+  background: black;
+  color: white;
+  border: none;
+  font-size: 16px;
+  border-radius: 6px;
+  cursor: pointer;
 }
 
-function startDrawing(event) {
-  event.preventDefault();
-  isDrawing = true;
-  points = "";
-
-  const pos = getMousePosition(event);
-
-  currentLine = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
-  currentLine.setAttribute("fill", "none");
-  currentLine.setAttribute("stroke", getStrokeColor());
-  currentLine.setAttribute("stroke-width", strokeWidth.toString());
-  currentLine.setAttribute("stroke-linecap", "round");
-  currentLine.setAttribute("stroke-linejoin", "round");
-
-  points += `${pos.x},${pos.y} `;
-  currentLine.setAttribute("points", points);
-
-  svg.appendChild(currentLine);
+button:hover {
+  background: #333;
 }
-
-function draw(event) {
-  if (!isDrawing) return;
-
-  const pos = getMousePosition(event);
-  points += `${pos.x},${pos.y} `;
-  currentLine.setAttribute("points", points);
-}
-
-function stopDrawing() {
-  if (!isDrawing) return;
-  isDrawing = false;
-}
-
-colorPicker.addEventListener("input", (event) => {
-  strokeColor = event.target.value;
-});
-
-strokeRange.addEventListener("input", (event) => {
-  strokeWidth = parseFloat(event.target.value);
-  updateStrokeLabel(event.target.value);
-});
-
-rainbowBtn.addEventListener("click", () => {
-  rainbowMode = !rainbowMode;
-  rainbowBtn.textContent = rainbowMode ? "🌈 Rainbow On" : "🌈 Rainbow Off";
-  rainbowBtn.classList.toggle("active", rainbowMode);
-});
-
-svg.addEventListener("pointerdown", startDrawing);
-svg.addEventListener("pointermove", draw);
-svg.addEventListener("pointerup", stopDrawing);
-svg.addEventListener("pointerleave", stopDrawing);
-svg.addEventListener("pointercancel", stopDrawing);
-
-clearBtn.addEventListener("click", () => {
-  svg.innerHTML = "";
-});
-
