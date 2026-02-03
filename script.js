@@ -3,7 +3,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
+  height: 101vh;
   margin: 0;
   font-family: Arial, sans-serif;
   background: #f5f5f5;
@@ -29,3 +29,4 @@ button {
 button:hover {
   background: #333;
 }
+
