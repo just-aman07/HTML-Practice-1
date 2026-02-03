@@ -1,40 +1,22 @@
-<!DOCTYPE html>
+<!DOCTYPE html><!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SVG Drawing Pad</title>
+  <title>Drawing Board</title>
 
+  <!-- Link External CSS -->
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <h1>✨ Digital Drawing Board</h1>
-  <p>Click and drag to create your digital artwork</p>
+  <canvas id="board" width="600" height="400"></canvas>
 
-  <button id="clearBtn">✕ Clear Canvas</button>
+  <button id="clearBtn">Clear</button>
 
-  <div class="toolbar">
-    <label class="control">
-      <span>Stroke Color</span>
-      <input type="color" id="colorPicker" value="#667eea" aria-label="Choose stroke color">
-    </label>
-    <label class="control">
-      <span>Stroke Width</span>
-      <div class="slider-group">
-        <input type="range" id="strokeWidth" min="1" max="12" step="0.5" value="2.5" aria-label="Adjust stroke width">
-        <span id="strokeWidthValue">2.5</span>
-      </div>
-    </label>
-    <button id="rainbowBtn" class="ghost">🌈 Rainbow Off</button>
-  </div>
-  <p class="instructions">Drag across the canvas with a mouse, finger, or stylus; tweak the controls above to sculpt color, thickness, and playful rainbow mode.</p>
-
-  <div class="container">
-    <svg id="drawingBoard"></svg>
-  </div>
-
+  <!-- Link External JS -->
   <script src="script.js"></script>
-
 </body>
 </html>
+
+
